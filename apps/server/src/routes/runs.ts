@@ -55,10 +55,10 @@ runsRouter.get("/:id/stream", (c) => {
   return streamSSE(c, async (stream) => {
     await new Promise<void>((resolve) => {
       emitter.on("case", async (data: unknown) => {
-        await stream.writeSSE({ data: JSON.stringify(data) });
+        await stream.writeSSE({ event: "case", data: JSON.stringify(data) });
       });
       emitter.once("done", async () => {
-        await stream.writeSSE({ data: JSON.stringify({ done: true }) });
+        await stream.writeSSE({ event: "done", data: JSON.stringify({ done: true }) });
         resolve();
       });
       // Timeout after 10 min
