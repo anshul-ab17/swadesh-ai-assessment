@@ -131,7 +131,7 @@ export async function extractClinical(
       response: response.content,
       validationErrors: parsed.success
         ? undefined
-        : parsed.error.errors.map((e) => `${e.path.join(".")}: ${e.message}`),
+        : parsed.error.issues.map((e) => `${e.path.join(".")}: ${e.message}`),
       cacheReadTokens: usage.cacheReadTokens,
     };
     attempts.push(log);
