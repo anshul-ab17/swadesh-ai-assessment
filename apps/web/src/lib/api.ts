@@ -7,16 +7,19 @@ const base = () => env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:8787";
 
 export async function fetchRuns(): Promise<RunRecord[]> {
   const res = await fetch(`${base()}/api/v1/runs`);
+  if (!res.ok) throw new Error(`fetchRuns failed: ${res.status}`);
   return res.json() as Promise<RunRecord[]>;
 }
 
 export async function fetchRun(id: string): Promise<RunDetail> {
   const res = await fetch(`${base()}/api/v1/runs/${id}`);
+  if (!res.ok) throw new Error(`fetchRun failed: ${res.status}`);
   return res.json() as Promise<RunDetail>;
 }
 
 export async function fetchCase(runId: string, transcriptId: string): Promise<CaseResult & { transcript: string; gold: unknown }> {
   const res = await fetch(`${base()}/api/v1/runs/${runId}/cases/${transcriptId}`);
+  if (!res.ok) throw new Error(`fetchCase failed: ${res.status}`);
   return res.json() as Promise<CaseResult & { transcript: string; gold: unknown }>;
 }
 
@@ -26,6 +29,7 @@ export async function startRun(opts: { strategy: string; model?: string }): Prom
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(opts),
   });
+  if (!res.ok) throw new Error(`startRun failed: ${res.status}`);
   return res.json() as Promise<{ runId: string }>;
 }
 
@@ -38,5 +42,8 @@ export function streamRun(runId: string, onEvent: (data: unknown) => void, onDon
     onDone();
     es.close();
   });
+  es.onerror = () => {
+    es.close();
+  };
   return () => es.close();
 }

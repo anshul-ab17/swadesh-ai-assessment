@@ -14,17 +14,18 @@ export default function RunDetailPage() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    let stop: (() => void) | undefined;
     fetchRun(id).then((r) => {
       setRun(r);
       if (r.status === "running") {
-        const stop = streamRun(
+        stop = streamRun(
           id,
           () => setProgress((p) => p + 1),
           () => fetchRun(id).then(setRun),
         );
-        return stop;
       }
     });
+    return () => stop?.();
   }, [id]);
 
   async function openCase(c: CaseResult) {

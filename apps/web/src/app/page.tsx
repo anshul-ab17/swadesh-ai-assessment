@@ -17,8 +17,13 @@ export default function RunsListPage() {
 
   async function handleStart() {
     setStarting(true);
-    const { runId } = await startRun({ strategy });
-    window.location.href = `/runs/${runId}`;
+    try {
+      const { runId } = await startRun({ strategy });
+      window.location.href = `/runs/${runId}`;
+    } catch (err) {
+      console.error("Failed to start run:", err);
+      setStarting(false);
+    }
   }
 
   const fields = ["chief_complaint", "vitals", "medications_f1", "diagnoses_f1", "plan_f1", "follow_up"] as const;

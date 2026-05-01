@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { fetchRun, fetchRuns } from "@/lib/api";
@@ -16,7 +16,7 @@ const FIELDS = [
   { key: "follow_up", label: "Follow-Up" },
 ] as const;
 
-export default function ComparePage() {
+function CompareInner() {
   const params = useSearchParams();
   const aId = params.get("a") ?? "";
   const bId = params.get("b") ?? "";
@@ -153,5 +153,13 @@ export default function ComparePage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function ComparePage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-gray-500">Loading…</div>}>
+      <CompareInner />
+    </Suspense>
   );
 }
