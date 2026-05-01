@@ -1,4 +1,4 @@
-import type { ClinicalExtraction } from "./schema.ts";
+import type { ClinicalExtraction } from "./schema.js";
 
 export type PromptStrategy = "zero_shot" | "few_shot" | "cot";
 
@@ -47,6 +47,7 @@ export interface RunRecord {
   totalTokensOut: number;
   cacheReadTokens: number;
   cacheWriteTokens: number;
+  /** Fixed-decimal string (e.g. "0.004231") — Drizzle ORM returns numeric columns as strings */
   costUsd: string;
   wallMs: number;
   schemaFailures: number;
@@ -59,6 +60,7 @@ export interface RunSummary extends RunRecord {
 }
 
 export interface SSEEvent {
+  runId: string;
   transcriptId: string;
   status: "completed" | "failed";
   scores: FieldScores;
